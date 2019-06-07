@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "0.0.5" %}
-{% set sha256sum = "977aa6e5fd3f7e9d1c8fe7aeed841dfe3ede75dfce04255d4c670e663faaef2a" %}
+{% set version = "0.0.6" %}
+{% set sha256sum = "dea20a00344a5f54fc5733df8ca742e4ecf404ef7b829ea674b3b5f5eefd20c4" %}
 
 package:
   name: {{ name|lower }}
