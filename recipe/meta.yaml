@@ -22,7 +22,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - wheel >=0.32,<0.33
+    - wheel
     - msinttypes  # [win and py27]
   run:
     - python
