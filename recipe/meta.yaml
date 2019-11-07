@@ -36,7 +36,7 @@ test:
     - pytest >=4.0.0,<5.0.0
     - unittest2 ==1.1.0  # [py27]
     - pytz
-    - mock >=2.0.0,<3.0.0
+    - mock
     - numpy >=1.15.0
   commands:
     - python -m pytest --tb=native --pyargs {{ name }}
