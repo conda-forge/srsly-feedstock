@@ -22,7 +22,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - wheel >=0.32,<0.33
+    - wheel
     - msinttypes  # [win and py27]
   run:
     - python
@@ -35,8 +35,8 @@ test:
   requires:
     - pytest >=4.0.0,<5.0.0
     - unittest2 ==1.1.0  # [py27]
-    - pytz ==2018.7
-    - mock >=2.0.0,<3.0.0
+    - pytz
+    - mock
     - numpy >=1.15.0
   commands:
     - python -m pytest --tb=native --pyargs {{ name }}
