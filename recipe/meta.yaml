@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "1.0.2" %}
-{% set sha256sum = "59258b81d567df207f8a0a33c4b5fa232afccf1d927c8ce3ba5395bfd64c0ed8" %}
+{% set version = "2.1.0" %}
+{% set sha256sum = "6310c5dac1c9121b6d919507ced0871c44690cb93c8d5b979db5b455cbc087eb" %}
 
 package:
   name: {{ name|lower }}
@@ -12,9 +12,9 @@ source:
 
 build:
   number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
-  skip: True  # [py2k or py35]
-  
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [py2k or py35]
+
 
 requirements:
   build:
@@ -46,7 +46,7 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: 'Modern high-performance serialization utilities for Python'
+  summary: Modern high-performance serialization utilities for Python
 
   doc_url: https://github.com/explosion/srsly
   dev_url: https://github.com/explosion/srsly
