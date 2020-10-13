@@ -34,7 +34,7 @@ test:
     - srsly
     - srsly.tests
   requires:
-    - pytest >=4.0.0,<5.0.0
+    - pytest
     - pytz
     - mock
     - numpy >=1.15.0
