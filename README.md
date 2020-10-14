@@ -5,11 +5,13 @@ Home: http://github.com/explosion/srsly
 
 Package license: MIT
 
-Feedstock license: BSD-3-Clause
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/srsly-feedstock/blob/master/LICENSE.txt)
 
 Summary: Modern high-performance serialization utilities for Python
 
+Development: https://github.com/explosion/srsly
 
+Documentation: https://github.com/explosion/srsly
 
 Current build status
 ====================
