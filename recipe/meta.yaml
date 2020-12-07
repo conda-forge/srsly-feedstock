@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "1.0.4" %}
-{% set sha256sum = "9ca5633a5303ce0d0b84d1bdb6d029f665ba2b7d320f5482525b125ddfb8a390" %}
+{% set version = "1.0.5" %}
+{% set sha256sum = "d3dd796372367c71946d0cd6f734e49db3d99dd13a57bdac937d9eb62689fc9e" %}
 
 package:
   name: {{ name|lower }}
@@ -9,8 +9,6 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256sum }}
-  patches:
-    - patches/0001-ujson-tests-assertalmostequal.patch
 
 build:
   number: 0
