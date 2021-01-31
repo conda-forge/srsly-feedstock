@@ -1,13 +1,14 @@
 {% set name = "srsly" %}
-{% set version = "2.3.2" %}
-{% set sha256sum = "f78eaef8d982e98921ce026d4205e652a9333137259f0b621f5c7b579e746e9d" %}
+{% set version = "2.3.3" %}
+{% set sha256sum = "5ea2c0442bd77c688f085a020b7c57597fce5898e378edab1cfd042301fc772b" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://github.com/adrianeboyd/srsly/archive/0a3e04dc4bc8af45d7cdc3f30a079079517dd219.zip
   sha256: {{ sha256sum }}
 
 build:
