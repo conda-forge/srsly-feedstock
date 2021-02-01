@@ -31,6 +31,7 @@ requirements:
     - cython
   run:
     - python
+    - catalogue >=2.0.1,<2.1.0
 
 test:
   imports:
