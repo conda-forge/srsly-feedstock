@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "2.4.0" %}
-{% set sha256sum = "e29730be53015970e4a59050e8e9f9be44d762108a617df56c9dfc981b515ab7" %}
+{% set version = "2.4.1" %}
+{% set sha256sum = "b0f2aec0a329e6e7e742a0a60e99a74968ca29be71f35c5c4de221e328176926" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   patches: patches/0001-setup-root-path.patch
 
 build:
-  number: 2
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps -vv
   skip: true  # [py2k or py35]
 
