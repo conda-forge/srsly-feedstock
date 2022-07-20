@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "2.4.3" %}
-{% set sha256sum = "dbe91f6dd4aea9e819493628356dc715bd9c606486297bb7ca5748e6e003841c" %}
+{% set version = "2.4.4" %}
+{% set sha256sum = "e8a06581627b6712f19c60241b7c14c2bb29ce86ef04f791379a79f1b249a128" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   patches: patches/0001-skip-deprecation-test.patch
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 
