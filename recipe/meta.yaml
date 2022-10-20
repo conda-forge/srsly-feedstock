@@ -42,6 +42,7 @@ test:
     - pytz
     - mock
     - numpy >=1.15.0
+    - psutil
   commands:
     - python -m pytest --tb=native --pyargs {{ name }}
 
