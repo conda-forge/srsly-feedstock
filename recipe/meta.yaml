@@ -11,7 +11,6 @@ source:
   sha256: {{ sha256sum }}
   patches:
     - patches/0001-skip-deprecation-test.patch
-    - patches/0002-skip-cloudpickle-tests.patch
 
 build:
   number: 0
