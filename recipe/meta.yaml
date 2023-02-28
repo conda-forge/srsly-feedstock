@@ -1,6 +1,6 @@
 {% set name = "srsly" %}
-{% set version = "2.4.5" %}
-{% set sha256sum = "c842258967baa527cea9367986e42b8143a1a890e7d4a18d25a36edc3c7a33c7" %}
+{% set version = "2.4.6" %}
+{% set sha256sum = "47b41f323aba4c9c3311abf60e443c03a9efe9c69f65dc402d173c32f7744a6f" %}
 
 package:
   name: {{ name|lower }}
@@ -14,7 +14,7 @@ source:
     - patches/0002-skip-cloudpickle-tests.patch
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 
