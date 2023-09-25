@@ -13,7 +13,7 @@ source:
     - patches/0001-skip-deprecation-test.patch
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 
