@@ -1,19 +1,19 @@
 {% set name = "srsly" %}
-{% set version = "2.4.8" %}
-{% set sha256sum = "b24d95a65009c2447e0b49cda043ac53fecf4f09e358d87a57446458f91b8a91" %}
+{% set version = "2.5.1" %}
+{% set sha256sum = "ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256sum }}
   patches:
     - patches/0001-skip-deprecation-test.patch
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 
@@ -23,6 +23,7 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - cython >=0.29.1,<0.30.0                # [build_platform != target_platform]
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
   host:
     - python
