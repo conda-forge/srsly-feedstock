@@ -1,0 +1,56 @@
+From 8772442fc481843061fcd3d3036328516f4279d9 Mon Sep 17 00:00:00 2001
+From: Shaun Walbridge <shaun.walbridge@gmail.com>
+Date: Tue, 25 Feb 2025 22:15:42 -0500
+Subject: [PATCH 2/4] Use upstream `cloudpickle`
+
+There are no modifications made to the `cloudpickle` package, rather
+than vendoring it, allow pip resolution to find the updated package.
+Upstream has a number of improvements, including explicit Python 3.13
+support in its tests.
+---
+ setup.cfg            | 5 +----
+ srsly/_pickle_api.py | 2 +-
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index 78ee1ac..8bebfcd 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -32,6 +32,7 @@ setup_requires =
+ 	cython>=0.29.1
+ install_requires = 
+ 	catalogue>=2.0.3,<2.1.0
++    cloudpickle>=2.2.0
+ 
+ [options.entry_points]
+ spacy_readers = 
+@@ -53,14 +54,10 @@ select = B,C,E,F,W,T4,B9
+ exclude = 
+ 	srsly/__init__.py
+ 	srsly/msgpack/__init__.py
+-	srsly/cloudpickle/__init__.py
+ 
+ [mypy]
+ ignore_missing_imports = True
+ 
+-[mypy-srsly.cloudpickle.*]
+-ignore_errors = True
+-
+ [egg_info]
+ tag_build = 
+ tag_date = 0
+diff --git a/srsly/_pickle_api.py b/srsly/_pickle_api.py
+index 0e894d9..d8f6d80 100644
+--- a/srsly/_pickle_api.py
++++ b/srsly/_pickle_api.py
+@@ -1,6 +1,6 @@
+ from typing import Optional
+ 
+-from . import cloudpickle
++import cloudpickle
+ from .util import JSONInput, JSONOutput
+ 
+ 
+-- 
+2.39.5 (Apple Git-154)
+

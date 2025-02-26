@@ -10,18 +10,20 @@ source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256sum }}
   patches:
-    - patches/0001-skip-deprecation-test.patch
+    - patches/0001-Add-patch-to-skip-deprecation-warning-test-for-yaml.patch
+    - patches/0002-Use-upstream-cloudpickle.patch
+    - patches/0003-Use-upstream-ujson.patch
+    - patches/0004-Update-JSON-tests-spaces-after-keys-by-default.patch
 
 build:
-  number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  number: 1
 
 
 requirements:
   build:
     - python                                 # [build_platform != target_platform]
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython >=0.29.1,<0.30.0                # [build_platform != target_platform]
+    - cython                                 # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
@@ -30,10 +32,12 @@ requirements:
     - pip
     - setuptools
     - wheel
-    - cython >=0.29.1,<0.30.0
+    - cython
   run:
     - python
     - catalogue >=2.0.1,<2.1.0
+    - cloudpickle >=2.2.0
+    - ujson >=1.35
 
 test:
   imports:
