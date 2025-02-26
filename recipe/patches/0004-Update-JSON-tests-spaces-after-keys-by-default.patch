@@ -1,0 +1,54 @@
+From c16f11559daad23c147598c5ae00dd2ecad829d1 Mon Sep 17 00:00:00 2001
+From: Shaun Walbridge <shaun.walbridge@gmail.com>
+Date: Tue, 25 Feb 2025 22:17:56 -0500
+Subject: [PATCH 4/4] Update JSON tests: spaces after keys by default
+
+In `ujson` 2.0.0+, if an indent level is set a single space will be
+added between the keys and values. This matches the stdlib `json` module
+and is by-design, see the discussion on this upstream issue [1].
+
+1. https://github.com/ultrajson/ultrajson/issues/653
+---
+ srsly/tests/test_json_api.py | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/srsly/tests/test_json_api.py b/srsly/tests/test_json_api.py
+index 89ce400..64b3654 100644
+--- a/srsly/tests/test_json_api.py
++++ b/srsly/tests/test_json_api.py
+@@ -55,8 +55,8 @@ def test_write_json_file():
+     data = {"hello": "world", "test": 123}
+     # Provide two expected options, depending on how keys are ordered
+     expected = [
+-        '{\n  "hello":"world",\n  "test":123\n}',
+-        '{\n  "test":123,\n  "hello":"world"\n}',
++        '{\n  "hello": "world",\n  "test": 123\n}',
++        '{\n  "test": 123,\n  "hello": "world"\n}',
+     ]
+     with make_tempdir() as temp_dir:
+         file_path = temp_dir / "tmp.json"
+@@ -69,8 +69,8 @@ def test_write_json_file_gzip():
+     data = {"hello": "world", "test": 123}
+     # Provide two expected options, depending on how keys are ordered
+     expected = [
+-        '{\n  "hello":"world",\n  "test":123\n}',
+-        '{\n  "test":123,\n  "hello":"world"\n}',
++        '{\n  "hello": "world",\n  "test": 123\n}',
++        '{\n  "test": 123,\n  "hello": "world"\n}',
+     ]
+     with make_tempdir() as temp_dir:
+         file_path = force_string(temp_dir / "tmp.json")
+@@ -83,8 +83,8 @@ def test_write_json_stdout(capsys):
+     data = {"hello": "world", "test": 123}
+     # Provide two expected options, depending on how keys are ordered
+     expected = [
+-        '{\n  "hello":"world",\n  "test":123\n}\n',
+-        '{\n  "test":123,\n  "hello":"world"\n}\n',
++        '{\n  "hello": "world",\n  "test": 123\n}\n',
++        '{\n  "test": 123,\n  "hello": "world"\n}\n',
+     ]
+     write_json("-", data)
+     captured = capsys.readouterr()
+-- 
+2.39.5 (Apple Git-154)
+

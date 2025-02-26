@@ -1,0 +1,69 @@
+From b9ef9b46e04fb363720633e22d7a68091eae6237 Mon Sep 17 00:00:00 2001
+From: Shaun Walbridge <shaun.walbridge@gmail.com>
+Date: Tue, 25 Feb 2025 22:17:05 -0500
+Subject: [PATCH 3/4] Use upstream `ujson`
+
+The ultrajson version (1.35) was released in 2016, and while some CVEs
+have been addressed, there are a number of additional outstanding CVEs
+present in this version. Update to use the upstream version, which is
+itself in maintenance-only mode but still maintained for security issues
+and new Python versions.
+---
+ setup.cfg          |  1 +
+ setup.py           | 14 --------------
+ srsly/_json_api.py |  2 +-
+ 3 files changed, 2 insertions(+), 15 deletions(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index 8bebfcd..e026c21 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -33,6 +33,7 @@ setup_requires =
+ install_requires = 
+ 	catalogue>=2.0.3,<2.1.0
+     cloudpickle>=2.2.0
++    ujson>=1.35
+ 
+ [options.entry_points]
+ spacy_readers = 
+diff --git a/setup.py b/setup.py
+index 7fd4252..df10e45 100644
+--- a/setup.py
++++ b/setup.py
+@@ -109,20 +109,6 @@ def setup_package():
+                     define_macros=macros,
+                 )
+             )
+-        ext_modules.append(
+-            Extension(
+-                "srsly.ujson.ujson",
+-                sources=[
+-                    "./srsly/ujson/ujson.c",
+-                    "./srsly/ujson/objToJSON.c",
+-                    "./srsly/ujson/JSONtoObj.c",
+-                    "./srsly/ujson/lib/ultrajsonenc.c",
+-                    "./srsly/ujson/lib/ultrajsondec.c",
+-                ],
+-                include_dirs=["./srsly/ujson", "./srsly/ujson/lib"],
+-                extra_compile_args=["-D_GNU_SOURCE"],
+-            )
+-        )
+         print("Cythonizing sources")
+         ext_modules = cythonize(
+             ext_modules, compiler_directives=COMPILER_DIRECTIVES, language_level=2
+diff --git a/srsly/_json_api.py b/srsly/_json_api.py
+index 24d25fd..6c48c1b 100644
+--- a/srsly/_json_api.py
++++ b/srsly/_json_api.py
+@@ -3,7 +3,7 @@ import sys
+ import json as _builtin_json
+ import gzip
+ 
+-from . import ujson
++import ujson
+ from .util import force_path, force_string, FilePath, JSONInput, JSONOutput
+ 
+ 
+-- 
+2.39.5 (Apple Git-154)
+
