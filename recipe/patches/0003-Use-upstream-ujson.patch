@@ -1,7 +1,7 @@
-From b9ef9b46e04fb363720633e22d7a68091eae6237 Mon Sep 17 00:00:00 2001
+From 754c08e81a9b2a79b629abf613df266ac06ab311 Mon Sep 17 00:00:00 2001
 From: Shaun Walbridge <shaun.walbridge@gmail.com>
 Date: Tue, 25 Feb 2025 22:17:05 -0500
-Subject: [PATCH 3/4] Use upstream `ujson`
+Subject: [PATCH 3/5] Use upstream `ujson`
 
 The ultrajson version (1.35) was released in 2016, and while some CVEs
 have been addressed, there are a number of additional outstanding CVEs
@@ -15,17 +15,17 @@ and new Python versions.
  3 files changed, 2 insertions(+), 15 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 8bebfcd..e026c21 100644
+index 3896a58..c78e517 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -33,6 +33,7 @@ setup_requires =
- install_requires = 
- 	catalogue>=2.0.3,<2.1.0
+ install_requires =
+     catalogue>=2.0.3,<2.1.0
      cloudpickle>=2.2.0
 +    ujson>=1.35
  
  [options.entry_points]
- spacy_readers = 
+ # If spaCy is installed in the same environment as srsly, it will automatically
 diff --git a/setup.py b/setup.py
 index 7fd4252..df10e45 100644
 --- a/setup.py
@@ -64,6 +64,3 @@ index 24d25fd..6c48c1b 100644
  from .util import force_path, force_string, FilePath, JSONInput, JSONOutput
  
  
--- 
-2.39.5 (Apple Git-154)
-
