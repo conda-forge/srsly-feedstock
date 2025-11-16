@@ -5,8 +5,8 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/s/srsly/srsly-{{ version }}.tar.gz
-  sha256: ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e
+  url: https://github.com/explosion/srsly/archive/refs/tags/release-v{{ version }}.tar.gz
+  sha256: 1ad1ae8c933c114e0b5c0374bec274f072d707ba94b46c8e21ffba7e6c06ee8a
   patches:
     - patches/0001-skip-deprecation-test.patch
     - patches/0002-Use-upstream-cloudpickle.patch
