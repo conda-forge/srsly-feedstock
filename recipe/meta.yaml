@@ -1,14 +1,12 @@
-{% set name = "srsly" %}
 {% set version = "2.5.1" %}
-{% set sha256sum = "ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e" %}
 
 package:
-  name: {{ name|lower }}
+  name: srsly
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256sum }}
+  url: https://pypi.org/packages/source/s/srsly/srsly-{{ version }}.tar.gz
+  sha256: ab1b4bf6cf3e29da23dae0493dd1517fb787075206512351421b89b4fc27c77e
   patches:
     - patches/0001-skip-deprecation-test.patch
     - patches/0002-Use-upstream-cloudpickle.patch
@@ -51,7 +49,7 @@ test:
     - numpy >=1.15.0
     - psutil
   commands:
-    - python -m pytest --tb=native --pyargs {{ name }}
+    - python -m pytest --tb=native --pyargs srsly
 
 about:
   home: http://github.com/explosion/srsly
