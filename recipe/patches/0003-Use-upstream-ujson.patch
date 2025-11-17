@@ -1,7 +1,7 @@
-From 754c08e81a9b2a79b629abf613df266ac06ab311 Mon Sep 17 00:00:00 2001
+From 69692e9e03e0fc49e260a2c32f30f6dbec19a2de Mon Sep 17 00:00:00 2001
 From: Shaun Walbridge <shaun.walbridge@gmail.com>
 Date: Tue, 25 Feb 2025 22:17:05 -0500
-Subject: [PATCH 3/5] Use upstream `ujson`
+Subject: [PATCH 3/4] Use upstream `ujson`
 
 The ultrajson version (1.35) was released in 2016, and while some CVEs
 have been addressed, there are a number of additional outstanding CVEs
@@ -15,7 +15,7 @@ and new Python versions.
  3 files changed, 2 insertions(+), 15 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 3896a58..c78e517 100644
+index dc94fa8..8bf2413 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -33,6 +33,7 @@ setup_requires =

@@ -1,7 +1,7 @@
-From 88b45bf63acf3ec3a1a7009a61a151cc6ed81ed9 Mon Sep 17 00:00:00 2001
+From 0ad739641561839b7987c533aaee51eaedbd3c4f Mon Sep 17 00:00:00 2001
 From: Shaun Walbridge <shaun.walbridge@gmail.com>
 Date: Tue, 25 Feb 2025 22:17:56 -0500
-Subject: [PATCH 4/5] Update JSON tests: spaces after keys by default
+Subject: [PATCH 4/4] Update JSON tests: spaces after keys by default
 
 In `ujson` 2.0.0+, if an indent level is set a single space will be
 added between the keys and values. This matches the stdlib `json` module
