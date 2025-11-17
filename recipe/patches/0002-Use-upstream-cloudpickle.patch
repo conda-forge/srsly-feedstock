@@ -1,7 +1,7 @@
-From 3b1bd2c9dca619672323e1bc70c1164a5e18bfa7 Mon Sep 17 00:00:00 2001
+From dfed18c3e7e662d77ccf1d314f4399f1fdaa48f8 Mon Sep 17 00:00:00 2001
 From: Shaun Walbridge <shaun.walbridge@gmail.com>
 Date: Tue, 25 Feb 2025 22:15:42 -0500
-Subject: [PATCH 2/5] Use upstream `cloudpickle`
+Subject: [PATCH 2/4] Use upstream `cloudpickle`
 
 There are no modifications made to the `cloudpickle` package, rather
 than vendoring it, allow pip resolution to find the updated package.
@@ -13,7 +13,7 @@ support in its tests.
  2 files changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/setup.cfg b/setup.cfg
-index 350d943..3896a58 100644
+index fe5f34a..dc94fa8 100644
 --- a/setup.cfg
 +++ b/setup.cfg
 @@ -32,6 +32,7 @@ setup_requires =

@@ -1,7 +1,7 @@
-From 97e3ed43ccb556ca351359491ba22fafb51d5229 Mon Sep 17 00:00:00 2001
+From 5035a741063d12e487b154c175af3839f47c792b Mon Sep 17 00:00:00 2001
 From: Adriane Boyd <adrianeboyd@gmail.com>
 Date: Tue, 26 Oct 2021 08:04:01 +0200
-Subject: [PATCH 1/5] skip deprecation test
+Subject: [PATCH 1/4] skip deprecation test
 
 ---
  srsly/tests/ruamel_yaml/test_deprecation.py | 3 +--
