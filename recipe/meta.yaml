@@ -33,7 +33,7 @@ requirements:
     - cython
   run:
     - python
-    - catalogue >=2.0.1,<2.1.0
+    - catalogue >=2.0.3,<2.1.0
     - cloudpickle >=2.2.0
     - ujson >=1.35
 
