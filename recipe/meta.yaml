@@ -1,4 +1,4 @@
-{% set version = "2.5.2" %}
+{% set version = "2.5.3" %}
 
 package:
   name: srsly
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/explosion/srsly/archive/refs/tags/release-v{{ version }}.tar.gz
-  sha256: 8ff1e563a74604f96dab258b769144c4f80632fa0529a5a29a8f6671b7a727ed
+  sha256: 1b55f5c3e56d6b312578d09c17337904daaa05e15ffdb208f5e5a41add3fa2b6
   patches:
     - patches/0001-skip-deprecation-test.patch
     - patches/0002-Use-upstream-cloudpickle.patch
