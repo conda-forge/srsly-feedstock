@@ -44,8 +44,10 @@ test:
     - mock
     - numpy >=1.15.0
     - psutil
+    - pip
   commands:
     - python -m pytest --tb=native --pyargs srsly
+    - pip check
 
 about:
   home: http://github.com/explosion/srsly
