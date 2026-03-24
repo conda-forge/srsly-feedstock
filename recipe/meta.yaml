@@ -1,17 +1,12 @@
-{% set version = "2.5.3" %}
+{% set version = "3.0.0" %}
 
 package:
   name: srsly
   version: {{ version }}
 
 source:
-  url: https://github.com/explosion/srsly/archive/refs/tags/release-v{{ version }}.tar.gz
-  sha256: 1b55f5c3e56d6b312578d09c17337904daaa05e15ffdb208f5e5a41add3fa2b6
-  patches:
-    - patches/0001-skip-deprecation-test.patch
-    - patches/0002-Use-upstream-cloudpickle.patch
-    - patches/0003-Use-upstream-ujson.patch
-    - patches/0004-Update-JSON-tests-spaces-after-keys-by-default.patch
+  url: https://github.com/explosion/srsly/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 4490e70cf118c40e254285700a2aafc7a706aecedb749d8ddfa1271127b02640
 
 build:
   number: 0
@@ -34,8 +29,10 @@ requirements:
   run:
     - python
     - catalogue >=2.0.3,<2.1.0
-    - cloudpickle >=2.2.0
-    - ujson >=1.35
+    - cloudpickle >=3.1.2,<4
+    - msgpack-python >=1.1,<2
+    - ruamel.yaml >=0.18.16,<1
+    - ujson >=5.11.0,<6
 
 test:
   imports:
@@ -47,8 +44,10 @@ test:
     - mock
     - numpy >=1.15.0
     - psutil
+    - pip
   commands:
     - python -m pytest --tb=native --pyargs srsly
+    - pip check
 
 about:
   home: http://github.com/explosion/srsly
