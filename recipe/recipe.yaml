@@ -15,6 +15,7 @@ source:
     - patches/0003-Use-upstream-ujson.patch
     - patches/0004-Update-JSON-tests-spaces-after-keys-by-default.patch
     - patches/0005-Unvendor-ruamel.yaml.patch
+    - patches/0006-Unvendor-msgpack.patch
 
 build:
   number: 1
@@ -39,6 +40,7 @@ requirements:
     - python
     - catalogue >=2.0.3,<2.1.0
     - cloudpickle >=2.2.0
+    - msgpack-python >=1.1
     - ruamel.yaml >=0.18.16
     - ujson >=1.35
 
