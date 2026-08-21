@@ -1,7 +1,13 @@
 build_platform:
-  linux_aarch64: linux_64
   linux_ppc64le: linux_64
-  osx_arm64: osx_64
+noarch_platforms:
+  # test on all platforms since we're doing some heavy unvendoring
+  - linux_64
+  - linux_aarch64
+  - linux_ppc64le
+  - osx_64
+  - osx_arm64
+  - win_64
 conda_build:
   pkg_format: '2'
 conda_build_tool: rattler-build
@@ -12,5 +18,6 @@ github:
 provider:
   linux_aarch64: default
   linux_ppc64le: default
+  osx_arm64: default
   win: azure
 test: native_and_emulated
