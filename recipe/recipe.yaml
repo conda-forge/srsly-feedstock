@@ -66,4 +66,7 @@ about:
 
 extra:
   recipe-maintainers:
-    - conda-forge/spacy
+    - rmax
+    - honnibal
+    - ines
+    - h-vetinari
