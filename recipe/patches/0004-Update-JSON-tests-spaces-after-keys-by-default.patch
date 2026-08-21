@@ -16,23 +16,23 @@ diff --git a/srsly/tests/test_json_api.py b/srsly/tests/test_json_api.py
 index 89ce400..64b3654 100644
 --- a/srsly/tests/test_json_api.py
 +++ b/srsly/tests/test_json_api.py
-@@ -55,8 +55,8 @@ def test_write_json_file():
+@@ -55,8 +55,10 @@ def test_write_json_file():
      data = {"hello": "world", "test": 123}
      # Provide two expected options, depending on how keys are ordered
      expected = [
--        '{\n  "hello":"world",\n  "test":123\n}',
--        '{\n  "test":123,\n  "hello":"world"\n}',
+         '{\n  "hello":"world",\n  "test":123\n}',
+         '{\n  "test":123,\n  "hello":"world"\n}',
 +        '{\n  "hello": "world",\n  "test": 123\n}',
 +        '{\n  "test": 123,\n  "hello": "world"\n}',
      ]
      with make_tempdir() as temp_dir:
          file_path = temp_dir / "tmp.json"
-@@ -69,8 +69,8 @@ def test_write_json_file_gzip():
+@@ -69,8 +69,10 @@ def test_write_json_file_gzip():
      data = {"hello": "world", "test": 123}
      # Provide two expected options, depending on how keys are ordered
      expected = [
--        '{\n  "hello":"world",\n  "test":123\n}',
--        '{\n  "test":123,\n  "hello":"world"\n}',
+         '{\n  "hello":"world",\n  "test":123\n}',
+         '{\n  "test":123,\n  "hello":"world"\n}',
 +        '{\n  "hello": "world",\n  "test": 123\n}',
 +        '{\n  "test": 123,\n  "hello": "world"\n}',
      ]
