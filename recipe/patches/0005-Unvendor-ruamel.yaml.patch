@@ -1,0 +1,57 @@
+From ce05526a3c3a099798cacdcf68dbdaa2c02f9da2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>
+Date: Fri, 21 Aug 2026 12:03:39 +0200
+Subject: [PATCH] Unvendor ruamel.yaml
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Minimal, based on https://github.com/explosion/srsly/pull/120.
+
+Signed-off-by: Michał Górny <mgorny@gentoo.org>
+---
+ setup.cfg                    | 1 +
+ srsly/_yaml_api.py           | 4 ++--
+ srsly/tests/test_yaml_api.py | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index 8bf2413..f34047c 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -33,6 +33,7 @@ setup_requires =
+ install_requires =
+     catalogue>=2.0.3,<2.1.0
+     cloudpickle>=2.2.0
++    ruamel.yaml >=0.18.16
+     ujson>=1.35
+ 
+ [options.entry_points]
+diff --git a/srsly/_yaml_api.py b/srsly/_yaml_api.py
+index 36f24aa..639d561 100644
+--- a/srsly/_yaml_api.py
++++ b/srsly/_yaml_api.py
+@@ -2,8 +2,8 @@ from typing import Union, IO, Any
+ from io import StringIO
+ import sys
+ 
+-from .ruamel_yaml import YAML
+-from .ruamel_yaml.representer import RepresenterError
++from ruamel.yaml import YAML
++from ruamel.yaml.representer import RepresenterError
+ from .util import force_path, FilePath, YAMLInput, YAMLOutput
+ 
+ 
+diff --git a/srsly/tests/test_yaml_api.py b/srsly/tests/test_yaml_api.py
+index 31564e6..1ef8945 100644
+--- a/srsly/tests/test_yaml_api.py
++++ b/srsly/tests/test_yaml_api.py
+@@ -4,7 +4,7 @@ import pytest
+ 
+ from .._yaml_api import yaml_dumps, yaml_loads, read_yaml, write_yaml
+ from .._yaml_api import is_yaml_serializable
+-from ..ruamel_yaml.comments import CommentedMap
++from ruamel.yaml.comments import CommentedMap
+ from .util import make_tempdir
+ 
+ 
