@@ -1,0 +1,348 @@
+From 86991073c70a7782315128c113ce4b28ca0f5f70 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@gentoo.org>
+Date: Fri, 21 Aug 2026 12:16:55 +0200
+Subject: [PATCH] Unvendor msgpack
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Minimal version of https://github.com/explosion/srsly/pull/120.
+
+Signed-off-by: Michał Górny <mgorny@gentoo.org>
+---
+ setup.cfg                       |   1 +
+ setup.py                        |  22 ------
+ srsly/_msgpack_api.py           | 128 ++++++++++++++++++++++++++++----
+ srsly/_msgpack_numpy.py         |  80 ++++++++++++++++++++
+ srsly/tests/test_msgpack_api.py |   8 +-
+ 5 files changed, 197 insertions(+), 42 deletions(-)
+ create mode 100644 srsly/_msgpack_numpy.py
+
+diff --git a/setup.cfg b/setup.cfg
+index f34047c..0564713 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -33,6 +33,7 @@ setup_requires =
+ install_requires =
+     catalogue>=2.0.3,<2.1.0
+     cloudpickle>=2.2.0
++    msgpack >=1.1
+     ruamel.yaml >=0.18.16
+     ujson>=1.35
+ 
+diff --git a/setup.py b/setup.py
+index df10e45..6524026 100644
+--- a/setup.py
++++ b/setup.py
+@@ -4,17 +4,10 @@ from setuptools.command.build_ext import build_ext
+ from sysconfig import get_path
+ from setuptools import Extension, setup, find_packages
+ from pathlib import Path
+-from Cython.Build import cythonize
+-from Cython.Compiler import Options
+ import contextlib
+ import os
+ 
+ 
+-# Preserve `__doc__` on functions and classes
+-# http://docs.cython.org/en/latest/src/userguide/source_files_and_compilation.html#compiler-options
+-Options.docstrings = True
+-
+-
+ PACKAGE_DATA = {"": ["*.pyx", "*.pxd", "*.c", "*.h", "*.cpp"]}
+ PACKAGES = find_packages()
+ # msgpack has this whacky build where it only builds _cmsgpack which textually includes
+@@ -98,21 +91,6 @@ def setup_package():
+     with chdir(str(root)):
+         include_dirs = [get_path("include"), ".", "srsly"]
+         ext_modules = []
+-        for name in MOD_NAMES:
+-            mod_path = name.replace(".", "/") + ".pyx"
+-            ext_modules.append(
+-                Extension(
+-                    name,
+-                    [mod_path],
+-                    language="c++",
+-                    include_dirs=include_dirs,
+-                    define_macros=macros,
+-                )
+-            )
+-        print("Cythonizing sources")
+-        ext_modules = cythonize(
+-            ext_modules, compiler_directives=COMPILER_DIRECTIVES, language_level=2
+-        )
+ 
+         setup(
+             name="srsly",
+diff --git a/srsly/_msgpack_api.py b/srsly/_msgpack_api.py
+index 3da0fe6..5259380 100644
+--- a/srsly/_msgpack_api.py
++++ b/srsly/_msgpack_api.py
+@@ -1,8 +1,103 @@
+ import gc
++from contextlib import contextmanager
++
++import msgpack
+ 
+-from . import msgpack
+-from .msgpack import msgpack_encoders, msgpack_decoders  # noqa: F401
+ from .util import force_path, FilePath, JSONInputBin, JSONOutputBin
++from ._msgpack_numpy import encode_numpy, decode_numpy
++
++
++class _MsgpackExtensions:
++    """API for extending msgpack (de)serialization:
++
++        srsly.msgpack_encoders.register(name, func)
++        srsly.msgpack_decoders.register(name, func)
++
++    where `name` is a unique ID and `func` is a callable that accepts a single
++    argument:
++
++    - For encoders, the argument is the object to serialize. The callable should
++      return a new object (typically a dict) or the original object if the callback
++      does not recognize it.
++    - For decoders, the argument is the dict to deserialize, as returned by the encoders.
++      The callable should return a new object or the original dict if the callback
++      does not recognize it.
++    """
++
++    __slots__ = ("_ext",)
++
++    def __init__(self):
++        self._ext = {}
++
++    def register(self, name, func):
++        """Register a custom encoder/decoder function"""
++        self._ext[name] = func
++
++    def deregister(self, name):
++        del self._ext[name]
++
++    def _run(self, obj):
++        for func in self._ext.values():
++            out = func(obj)
++            if out is not obj:
++                return out
++        return obj
++
++
++class _MsgpackEncoderExtensions(_MsgpackExtensions):
++    def _run(self, obj):
++        out = super()._run(obj)
++        if out is not obj:
++            return out
++
++        # Convert subtypes of base types and tuples to lists.
++        # Effectively this undoes the strict_types=True option of msgpack.
++        # This is needed to support np.float64, which is a subclass of builtin float.
++        # Run this last to allow the user to register their own handlers first.
++
++        if isinstance(obj, tuple):
++            return list(obj)
++        # Note: bool and memoryview can't be subclassed
++        # set and frozenset are not supported by msgpack
++        for cls in (int, float, list, dict, str, bytes):
++            if isinstance(obj, cls):
++                return cls(obj)
++
++        return obj
++
++
++msgpack_encoders = _MsgpackEncoderExtensions()
++msgpack_decoders = _MsgpackExtensions()
++
++
++def encode_complex(obj):
++    if isinstance(obj, complex):
++        return {b"complex": True, b"data": repr(obj)}
++    return obj
++
++
++def decode_complex(obj):
++    if b"complex" in obj:
++        return complex(obj[b"data"])
++    return obj
++
++
++msgpack_encoders.register("numpy", func=encode_numpy)
++msgpack_decoders.register("numpy", func=decode_numpy)
++# Note: np.complex128 is a subclass of built-in complex, so
++# encode_complex must be registered after encode_numpy.
++msgpack_encoders.register("complex", func=encode_complex)
++msgpack_decoders.register("complex", func=decode_complex)
++
++
++@contextmanager
++def _without_gc():
++    """msgpack-python docs suggest disabling gc before unpacking large messages"""
++    gc.disable()
++    try:
++        yield
++    finally:
++        gc.enable()
+ 
+ 
+ def msgpack_dumps(data: JSONInputBin) -> bytes:
+@@ -11,7 +106,13 @@ def msgpack_dumps(data: JSONInputBin) -> bytes:
+     data: The data to serialize.
+     RETURNS (bytes): The serialized bytes.
+     """
+-    return msgpack.dumps(data, use_bin_type=True)
++    return msgpack.dumps(
++        data,
++        # strict_types is False for everything except np.float64
++        # and np.complex128 (see above)
++        strict_types=True,
++        default=msgpack_encoders._run,
++    )
+ 
+ 
+ def msgpack_loads(data: bytes, use_list: bool = True) -> JSONOutputBin:
+@@ -22,11 +123,10 @@ def msgpack_loads(data: bytes, use_list: bool = True) -> JSONOutputBin:
+         deserialization slower.
+     RETURNS: The deserialized Python object.
+     """
+-    # msgpack-python docs suggest disabling gc before unpacking large messages
+-    gc.disable()
+-    msg = msgpack.loads(data, raw=False, use_list=use_list)
+-    gc.enable()
+-    return msg
++    with _without_gc():
++        return msgpack.loads(
++            data, raw=False, use_list=use_list, object_hook=msgpack_decoders._run
++        )
+ 
+ 
+ def write_msgpack(path: FilePath, data: JSONInputBin) -> None:
+@@ -37,7 +137,7 @@ def write_msgpack(path: FilePath, data: JSONInputBin) -> None:
+     """
+     file_path = force_path(path, require_exists=False)
+     with file_path.open("wb") as f:
+-        msgpack.dump(data, f, use_bin_type=True)
++        msgpack.dump(data, f, strict_types=True, default=msgpack_encoders._run)
+ 
+ 
+ def read_msgpack(path: FilePath, use_list: bool = True) -> JSONOutputBin:
+@@ -49,9 +149,7 @@ def read_msgpack(path: FilePath, use_list: bool = True) -> JSONOutputBin:
+     RETURNS (JSONOutputBin): The loaded and deserialized content.
+     """
+     file_path = force_path(path)
+-    with file_path.open("rb") as f:
+-        # msgpack-python docs suggest disabling gc before unpacking large messages
+-        gc.disable()
+-        msg = msgpack.load(f, raw=False, use_list=use_list)
+-        gc.enable()
+-        return msg
++    with file_path.open("rb") as f, _without_gc():
++        return msgpack.load(
++            f, raw=False, use_list=use_list, object_hook=msgpack_decoders._run
++        )
+diff --git a/srsly/_msgpack_numpy.py b/srsly/_msgpack_numpy.py
+new file mode 100644
+index 0000000..a3a842c
+--- /dev/null
++++ b/srsly/_msgpack_numpy.py
+@@ -0,0 +1,80 @@
++"""
++Support for serialization of numpy data types with msgpack.
++This is a heavily modified fork of a very old version of msgpack-numpy.
++"""
++
++# Copyright (c) 2013-2018, Lev E. Givon
++# All rights reserved.
++# Distributed under the terms of the BSD license:
++# http://www.opensource.org/licenses/bsd-license
++try:
++    import numpy as np
++
++    has_numpy = True
++except ImportError:
++    has_numpy = False
++
++try:
++    import cupy
++
++    has_cupy = True
++except ImportError:
++    has_cupy = False
++
++
++def encode_numpy(obj):
++    """
++    Data encoder for serializing numpy data types.
++    """
++    if not has_numpy:
++        return obj
++    if has_cupy and isinstance(obj, cupy.ndarray):
++        obj = obj.get()
++    if isinstance(obj, np.ndarray):
++        # If the dtype is structured, store the interface description;
++        # otherwise, store the corresponding array protocol type string:
++        if obj.dtype.kind == "V":
++            kind = b"V"
++            descr = obj.dtype.descr
++        else:
++            kind = b""
++            descr = obj.dtype.str
++        return {
++            b"nd": True,
++            b"type": descr,
++            b"kind": kind,
++            b"shape": obj.shape,
++            b"data": obj.data if obj.flags["C_CONTIGUOUS"] else obj.tobytes(),
++        }
++    if isinstance(obj, (np.bool_, np.number)):
++        return {b"nd": False, b"type": obj.dtype.str, b"data": obj.data}
++
++    return obj
++
++
++def decode_numpy(obj):
++    """
++    Decoder for deserializing numpy data types.
++    """
++    if b"nd" not in obj:
++        return obj
++
++    # Crash with a clean ModuleNotFoundError if numpy is not available
++    # instead of AttributeError
++    import numpy  # noqa: F401
++
++    if obj[b"nd"]:
++        # Check if "kind" is in obj to enable decoding of data
++        # serialized with older versions (#20):
++        if b"kind" in obj and obj[b"kind"] == b"V":
++            descr = [
++                tuple(t.decode() if type(t) is bytes else t for t in d)
++                for d in obj[b"type"]
++            ]
++        else:
++            descr = obj[b"type"]
++        return np.frombuffer(obj[b"data"], dtype=np.dtype(descr)).reshape(obj[b"shape"])
++    else:
++        # NumPy scalar
++        descr = obj[b"type"]
++        return np.frombuffer(obj[b"data"], dtype=np.dtype(descr))[0]
+diff --git a/srsly/tests/test_msgpack_api.py b/srsly/tests/test_msgpack_api.py
+index b516038..dab3d20 100644
+--- a/srsly/tests/test_msgpack_api.py
++++ b/srsly/tests/test_msgpack_api.py
+@@ -54,14 +54,12 @@ def test_write_msgpack_file():
+             assert f.read() in expected
+ 
+ 
+-@patch("srsly.msgpack._msgpack_numpy.np", None)
+-@patch("srsly.msgpack._msgpack_numpy.has_numpy", False)
+ def test_msgpack_without_numpy():
+-    """Test that msgpack works without numpy and raises correct errors (e.g.
++    """Test that msgpack works with and without numpy and raises correct errors (e.g.
+     when serializing datetime objects, the error should be msgpack's TypeError,
+     not a "'np' is not defined error")."""
+-    with pytest.raises(TypeError):
+-        msgpack_loads(msgpack_dumps(datetime.datetime.now()))
++    with pytest.raises(TypeError, match="datetime.datetime"):
++        msgpack_dumps(datetime.datetime.now())
+ 
+ 
+ def test_msgpack_custom_encoder_decoder():
