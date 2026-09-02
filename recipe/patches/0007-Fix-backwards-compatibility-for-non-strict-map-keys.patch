@@ -1,0 +1,41 @@
+From 71bc42bfa4d7955deb6c60c733aeec7654fa6959 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20G=C3=B3rny?= <mgorny@quansight.com>
+Date: Wed, 2 Sep 2026 16:27:11 +0200
+Subject: [PATCH] msgpack: Fix backwards compatibility for non-strict map keys
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Pass `strict_map_key=False` to `msgpack.load*()`, in order to fix
+backwards compatibility after unvendoring `msgpack`.  Otherwise, spaCy
+models fail to load.
+
+Curious enough, `msgpack` permits serializing dictionaries with int keys
+unconditionally, but requires the switch for a working round-robin.
+Reported in https://github.com/conda-forge/srsly-feedstock/issues/62.
+
+Signed-off-by: Michał Górny <mgorny@quansight.com>
+---
+ srsly/_msgpack_api.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/srsly/_msgpack_api.py b/srsly/_msgpack_api.py
+index 5259380..3f621be 100644
+--- a/srsly/_msgpack_api.py
++++ b/srsly/_msgpack_api.py
+@@ -125,7 +125,7 @@ def msgpack_loads(data: bytes, use_list: bool = True) -> JSONOutputBin:
+     """
+     with _without_gc():
+         return msgpack.loads(
+-            data, raw=False, use_list=use_list, object_hook=msgpack_decoders._run
++            data, raw=False, use_list=use_list, object_hook=msgpack_decoders._run, strict_map_key=False
+         )
+ 
+ 
+@@ -151,5 +151,5 @@ def read_msgpack(path: FilePath, use_list: bool = True) -> JSONOutputBin:
+     file_path = force_path(path)
+     with file_path.open("rb") as f, _without_gc():
+         return msgpack.load(
+-            f, raw=False, use_list=use_list, object_hook=msgpack_decoders._run
++            f, raw=False, use_list=use_list, object_hook=msgpack_decoders._run, strict_map_key=False
+         )
