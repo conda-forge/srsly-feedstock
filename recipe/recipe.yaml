@@ -16,9 +16,12 @@ source:
     - patches/0004-Update-JSON-tests-spaces-after-keys-by-default.patch
     - patches/0005-Unvendor-ruamel.yaml.patch
     - patches/0006-Unvendor-msgpack.patch
+    # https://github.com/conda-forge/srsly-feedstock/issues/62
+    # https://github.com/explosion/srsly/pull/122
+    - patches/0007-Fix-backwards-compatibility-for-non-strict-map-keys.patch
 
 build:
-  number: 1
+  number: 2
   noarch: python
 
 requirements:
