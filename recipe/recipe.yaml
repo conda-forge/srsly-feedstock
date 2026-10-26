@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "2.5.3"
+  version: "2.5.5"
 
 package:
   name: srsly
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://github.com/explosion/srsly/archive/refs/tags/release-v${{ version }}.tar.gz
-  sha256: 1b55f5c3e56d6b312578d09c17337904daaa05e15ffdb208f5e5a41add3fa2b6
+  sha256: 4ae7a5ffcc41f61b095fa1cf33891f430b5b841be0aea947a9b9f2fd6728a5b1
   patches:
     - patches/0002-Use-upstream-cloudpickle.patch
     - patches/0003-Use-upstream-ujson.patch
@@ -21,7 +21,7 @@ source:
     - patches/0007-Fix-backwards-compatibility-for-non-strict-map-keys.patch
 
 build:
-  number: 2
+  number: 0
   noarch: python
 
 requirements:
