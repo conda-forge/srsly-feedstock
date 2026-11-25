@@ -19,9 +19,12 @@ source:
     # https://github.com/conda-forge/srsly-feedstock/issues/62
     # https://github.com/explosion/srsly/pull/122
     - patches/0007-Fix-backwards-compatibility-for-non-strict-map-keys.patch
+    # restore catalogue-based msgpack_encoders/msgpack_decoders (2.x API),
+    # e.g. needed by spacy-curated-transformers
+    - patches/0008-msgpack-Restore-srsly-2.x-registry-API.patch
 
 build:
-  number: 0
+  number: 1
   noarch: python
 
 requirements:
